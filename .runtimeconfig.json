@@ -1,0 +1,7 @@
+{
+  "openai": { "key": "sk-xxxx" },
+  "gemini": { "key": "AIza-xxx" },
+  "perspective": { "key": "AIza-perspective-key" },
+  "deepl": { "key": "deepl-auth-key" },
+  "azure": { "key": "azure-subscription-key" }
+}

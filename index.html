@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>NeoStudio Chat IA</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="chat-container">
+    <div id="chat-window">
+      <div id="chat-log"></div>
+      <div id="typing-indicator" class="hidden">ChatGPT is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
+    </div>
+    <div id="chat-input">
+      <input type="text" id="user-input" placeholder="Pose ta question..." />
+      <button onclick="sendMessage()">Envoyer</button>
+    </div>
+  </div>
+  <script src="chat.js"></script>
+</body>
+</html>
