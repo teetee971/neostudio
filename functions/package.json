@@ -1,14 +1,9 @@
 {
-  "name": "functions_clean_full",
-  "scripts": {
-    "start": "firebase emulators:start --only functions"
-  },
+  "name": "functions",
+  "main": "index.js",
   "dependencies": {
-    "firebase-admin": "^11.5.0",
-    "firebase-functions": "^4.3.0",
-    "axios": "^1.4.0"
-  },
-  "engines": {
-    "node": "18"
+    "firebase-admin": "^11.10.1",
+    "firebase-functions": "^6.4.0",
+    "node-fetch": "^2.6.9"
   }
 }
