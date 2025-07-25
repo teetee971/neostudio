@@ -1,1 +1,16 @@
-<!DOCTYPE html><html><head><title>NeoStudio</title></head><body><h1>Bienvenue sur NeoStudio</h1></body></html>
+<!DOCTYPE html><html><head><title>NeoStudio Galerie IA</title></head><body>
+<h1>🎨 Galerie IA</h1><div id="gallery"></div>
+<script>
+  const data = [
+    { type: 'image', url: 'https://via.placeholder.com/200', label: 'Image AI' },
+    { type: 'video', url: 'https://www.w3schools.com/html/mov_bbb.mp4', label: 'Vidéo AI' }
+  ];
+  const container = document.getElementById("gallery");
+  data.forEach(item => {
+    const el = document.createElement(item.type === 'image' ? 'img' : 'video');
+    el.src = item.url;
+    el.width = 200;
+    if (item.type === 'video') el.controls = true;
+    container.appendChild(el);
+  });
+</script></body></html>
