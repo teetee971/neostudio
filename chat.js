@@ -13,47 +13,49 @@ async function sendMessage() {
   typing.classList.remove("hidden");
 
   try {
-    // Étape 1 - modération
+    console.log("🔍 Envoi pour modération...");
     const modResponse = await fetch(FIREBASE_BASE + "/moderate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: message })
     });
     const modData = await modResponse.json();
-    if (modData.openai.flagged || modData.perspective.TOXICITY?.summaryScore?.value > 0.6) {
-      appendMessage("⚠️", "Message refusé (contenu inapproprié détecté).");
+    console.log("✅ Modération : ", modData);
+
+    if (modData.openai?.flagged || modData.perspective?.TOXICITY?.summaryScore?.value > 0.6) {
+      appendMessage("⚠️", "Contenu modéré (toxique ou inapproprié).");
       typing.classList.add("hidden");
       return;
     }
 
-    // Étape 2 - appel GPT-4
+    console.log("💬 Envoi vers GPT-4...");
     const gptResponse = await fetch(FIREBASE_BASE + "/chatTyping", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt: message })
     });
 
-    if (!gptResponse.ok) throw new Error("GPT-4 erreur");
+    if (!gptResponse.ok) throw new Error("Erreur GPT-4: " + gptResponse.status);
 
     const gptData = await gptResponse.json();
-    const reply = gptData.reply;
-
-    // Option traduction (auto vers FR si réponse anglaise détectée)
-    const translated = await maybeTranslate(reply);
+    console.log("✅ Réponse GPT-4 : ", gptData);
+    const translated = await maybeTranslate(gptData.reply);
     appendMessage("🤖", translated);
   } catch (err) {
-    // fallback Gemini
+    console.warn("❌ GPT-4 KO, fallback Gemini", err);
     try {
-      const geminiRes = await fetch(FIREBASE_BASE + "/chatGemini", {
+      const gemRes = await fetch(FIREBASE_BASE + "/chatGemini", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: message })
       });
-      const geminiData = await geminiRes.json();
-      const translated = await maybeTranslate(geminiData.reply);
+      const gemData = await gemRes.json();
+      console.log("✅ Gemini : ", gemData);
+      const translated = await maybeTranslate(gemData.reply);
       appendMessage("🤖", translated);
     } catch (err2) {
-      appendMessage("❌", "Erreur GPT et Gemini");
+      console.error("❌ Erreur totale (Gemini aussi KO)", err2);
+      appendMessage("❌", "Erreur GPT-4 et Gemini : réponse impossible.");
     }
   } finally {
     typing.classList.add("hidden");
@@ -71,6 +73,7 @@ async function maybeTranslate(text) {
   const isEnglish = /[a-z]{3,}/i.test(text) && !/[éèàçùâêîôûëïüœ]/i.test(text);
   if (!isEnglish) return text;
 
+  console.log("🌐 Traduction demandée...");
   const res = await fetch(FIREBASE_BASE + "/translate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -78,5 +81,6 @@ async function maybeTranslate(text) {
   });
 
   const data = await res.json();
+  console.log("✅ Traduction reçue : ", data);
   return data?.deepl || text;
 }
