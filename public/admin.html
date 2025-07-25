@@ -1,24 +1,48 @@
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>🛠️ Admin Panel – NEOSTUDIO</title>
-  <style>
-    body { background: #121212; color: white; font-family: sans-serif; padding: 2rem; }
-    h1 { color: #00bcd4; }
-    table { width: 100%; margin-top: 2rem; border-collapse: collapse; }
-    th, td { padding: 1rem; border-bottom: 1px solid #444; }
-    th { background: #1c1c1c; }
-    button { background: #00bcd4; border: none; color: black; padding: 0.5rem 1rem; cursor: pointer; border-radius: 4px; }
-  </style>
-</head>
-<body>
-  <h1>🛠️ Interface d’administration IA</h1>
-  <table>
-    <tr><th>Nom</th><th>Dernier prompt</th><th>Date</th><th>Action</th></tr>
-    <tr><td>user01</td><td>Créer un logo futuriste</td><td>2025-07-24</td><td><button>Désactiver</button></td></tr>
-    <tr><td>user02</td><td>Génère une voix robotique</td><td>2025-07-23</td><td><button>Désactiver</button></td></tr>
-  </table>
-</body>
-</html>
+<!DOCTYPE html><html><head><title>Admin IA</title></head><body>
+<h2>🎛️ Admin Galerie IA</h2>
+<form id="uploadForm">
+  <input type="text" id="label" placeholder="Titre / description" required><br>
+  <input type="url" id="url" placeholder="URL du média (image/vidéo/son)" required><br>
+  <select id="type">
+    <option value="image">Image</option>
+    <option value="video">Vidéo</option>
+    <option value="voice">Voix</option>
+    <option value="texte">Texte</option>
+  </select><br>
+  <button type="submit">📤 Ajouter</button>
+</form>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "FAKE-REPLACE-ME",
+    authDomain: "neostudio-834fa.firebaseapp.com",
+    projectId: "neostudio-834fa",
+    storageBucket: "neostudio-834fa.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abc123"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const form = document.getElementById("uploadForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const label = document.getElementById("label").value;
+    const url = document.getElementById("url").value;
+    const type = document.getElementById("type").value;
+
+    try {
+      await addDoc(collection(db, "galerie"), { label, url, type, timestamp: Date.now() });
+      alert("✅ Média ajouté à Firestore !");
+      form.reset();
+    } catch (err) {
+      alert("❌ Erreur Firestore : " + err.message);
+    }
+  });
+</script>
+</body></html>
