@@ -1,21 +1,55 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>NeoStudio Chat IA</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>NEOSTUDIO AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { background: #111; color: white; font-family: sans-serif; }
+    #chat-widget {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 300px;
+      height: 400px;
+      background: #222;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    #chat-messages {
+      height: 300px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+    #chat-input {
+      display: flex;
+    }
+    #chat-input input {
+      flex: 1;
+      padding: 5px;
+      border-radius: 5px;
+      border: none;
+    }
+    #chat-input button {
+      padding: 5px 10px;
+      margin-left: 5px;
+      background: cyan;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <div id="chat-container">
-    <div id="chat-window">
-      <div id="chat-log"></div>
-      <div id="typing-indicator" class="hidden">ChatGPT is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
-    </div>
+  <div id="chat-widget">
+    <header>💬 GPT-4 Chat</header>
+    <div id="chat-messages"><p>Bonjour ! Pose-moi une question.</p></div>
     <div id="chat-input">
-      <input type="text" id="user-input" placeholder="Pose ta question..." />
-      <button onclick="sendMessage()">Envoyer</button>
+      <input type="text" placeholder="Votre message...">
+      <button>➤</button>
     </div>
   </div>
-  <script src="chat.js"></script>
+  <script type="module" src="chat.js"></script>
 </body>
 </html>
