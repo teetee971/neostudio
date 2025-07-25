@@ -1,0 +1,54 @@
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: url('../assets/images/bg.jpg') center/cover no-repeat fixed;
+  color: #fff;
+}
+
+.dark-mode {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+.top-nav {
+  padding: 10px 20px;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  backdrop-filter: blur(10px);
+}
+
+.hero {
+  padding: 120px 20px 40px;
+  text-align: center;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.1);
+  margin: 20px;
+  padding: 20px;
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.round-btn {
+  background-color: #00c6ff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.chat-floating {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0,0,0,0.7);
+  padding: 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  cursor: pointer;
+}

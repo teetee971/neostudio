@@ -1,0 +1,10 @@
+
+name = "neostudio"
+type = "javascript"
+account_id = "78642e56f72fff94c78e1ef87cb589a7"
+workers_dev = true
+compatibility_date = "2025-07-24"
+
+[site]
+bucket = "./dist"
+entry-point = "workers-site"
