@@ -1,1 +1,24 @@
-body { font-family: Arial; background: #111; color: white; }
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  color: white;
+}
+header.glass-header {
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.5);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+nav a { color: white; text-decoration: none; margin: 0 1rem; }
+.gallery-container, .admin-form { padding: 2rem; }
+input, select, button {
+  margin: 0.5rem 0; padding: 0.5rem; border-radius: 10px;
+  border: none; width: 100%; max-width: 400px;
+}
+button {
+  background-color: #1e90ff; color: white; font-weight: bold;
+}

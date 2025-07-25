@@ -1,32 +1,66 @@
-const functions = require('firebase-functions');
+const functions = require("firebase-functions");
 const { onRequest } = require("firebase-functions/v2/https");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const axios = require("axios");
 
-require('dotenv').config();
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const OPENAI_KEY = functions.config().openai?.key || "";
+const GEMINI_KEY = functions.config().gemini?.key || "";
+const DEEPL_KEY = functions.config().deepl?.key || "";
 
-// Fonction /chatGemini
-exports.chatGemini = onRequest(async (req, res) => {
-  const prompt = req.body.prompt || "Bonjour, que puis-je faire pour vous ?";
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+exports.generateText = onRequest(async (req, res) => {
+  const { prompt } = req.body;
   try {
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    res.json({ response: response.text() });
-  } catch (e) {
-    res.status(500).json({ error: e.toString() });
+    const result = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        model: "gpt-4",
+        messages: [{ role: "user", content: prompt }],
+      },
+      { headers: { Authorization: `Bearer ${OPENAI_KEY}` } }
+    );
+    res.json({ text: result.data.choices[0].message.content });
+  } catch (err) {
+    res.status(500).json({ error: "OpenAI error", detail: err.message });
   }
 });
 
-// Fonction /chatTyping (simulate typing)
-exports.chatTyping = functions.https.onCall(async (data, context) => {
-  const text = data.prompt || "Génération...";
-  const chunks = text.split(" ");
-  const delay = (ms) => new Promise((r) => setTimeout(r, ms));
-  let result = "";
-  for (let i = 0; i < chunks.length; i++) {
-    result += chunks[i] + " ";
-    await delay(80);
+exports.gemini = onRequest(async (req, res) => {
+  const { prompt } = req.body;
+  try {
+    const result = await axios.post(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + GEMINI_KEY,
+      { contents: [{ parts: [{ text: prompt }] }] }
+    );
+    res.json({ text: result.data.candidates?.[0]?.content?.parts?.[0]?.text || "..." });
+  } catch (err) {
+    res.status(500).json({ error: "Gemini error", detail: err.message });
   }
-  return { result };
+});
+
+exports.translate = onRequest(async (req, res) => {
+  const { text, target } = req.body;
+  try {
+    const result = await axios.post(
+      "https://api-free.deepl.com/v2/translate",
+      new URLSearchParams({ text, target_lang: target || "FR" }),
+      { headers: { Authorization: `DeepL-Auth-Key ${DEEPL_KEY}` } }
+    );
+    res.json({ deepl: result.data.translations[0].text });
+  } catch (err) {
+    res.status(500).json({ error: "DeepL error", detail: err.message });
+  }
+});
+
+exports.moderate = onRequest(async (req, res) => {
+  const { text } = req.body;
+  try {
+    const openaiRes = await axios.post(
+      "https://api.openai.com/v1/moderations",
+      { input: text },
+      { headers: { Authorization: `Bearer ${OPENAI_KEY}` } }
+    );
+    const flagged = openaiRes.data.results[0].flagged;
+    res.json({ openai: { flagged } });
+  } catch (err) {
+    res.status(500).json({ error: "Moderation error", detail: err.message });
+  }
 });
